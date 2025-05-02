@@ -1,7 +1,12 @@
 import express from "express";
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
+
+const generateToken = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "30d" });
+};
 
 router.post("/register", async (req, res) => {
   try {
@@ -45,11 +50,54 @@ router.post("/register", async (req, res) => {
     });
 
     await user.save();
-  } catch (error) {}
+
+    const token = generateToken(user._id);
+
+    res.status(201).json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        profileImage: user.profileImage,
+      },
+    });
+  } catch (error) {
+    console.log("Error in register route:", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
 });
 
 router.post("/login", async (req, res) => {
-  res.send("login");
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "Please fill all fields" });
+    }
+    // check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+    // check if password is correct
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+    // generate token
+    const token = generateToken(user._id);
+    res.status(200).json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        profileImage: user.profileImage,
+      },
+    });
+  } catch (error) {}
 });
 
 export default router;
