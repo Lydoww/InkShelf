@@ -7,7 +7,6 @@ const router = express.Router();
 
 router.post("/", protectRoute, async (req, res) => {
   try {
-    
     const { title, caption, rating, image } = req.body;
 
     if (!image || !title || !caption || !rating) {
@@ -34,6 +33,33 @@ router.post("/", protectRoute, async (req, res) => {
     res.status(201).json(newBook);
   } catch (error) {
     console.log("Error creating book", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// paginantion + infinite scroll
+router.get("/", protectRoute, async (req, res) => {
+  try {
+    const page = req.query.page || 1; // get page from query string
+    const limit = req.query.page || 5; // number of books per page
+    const skip = (page - 1) * limit; // number of books to skip
+
+    const books = await Book.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("user", "username profileImage");
+
+    const totalBooks = await Book.countDocuments(); // total number of books
+
+    res.send({
+      books,
+      currentPage: page,
+      totalBooks,
+      totalPages: Math.ceil(totalBooks / limit), // total number of pages
+    });
+  } catch (error) {
+    console.log("Error getting books", error);
     res.status(500).json({ message: "Server error" });
   }
 });
