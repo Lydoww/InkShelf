@@ -1,11 +1,13 @@
 import express from "express";
 import { cloudinary } from "../lib/cloudinary.js";
 import Book from "../models/Book.js";
+import protectRoute from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/", protectRoute, async (req, res) => {
   try {
+    
     const { title, caption, rating, image } = req.body;
 
     if (!image || !title || !caption || !rating) {
@@ -24,7 +26,7 @@ router.post("/", async (req, res) => {
       caption,
       rating,
       image: imageUrl,
-      //   user: req.user._id,
+      user: req.user._id, // user id from the token - protectRoute middleware
     };
 
     await newBook.save();
