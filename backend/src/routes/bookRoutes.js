@@ -5,6 +5,7 @@ import protectRoute from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
+//  Create a new book
 router.post("/", protectRoute, async (req, res) => {
   try {
     const { title, caption, rating, image } = req.body;
@@ -60,6 +61,52 @@ router.get("/", protectRoute, async (req, res) => {
     });
   } catch (error) {
     console.log("Error getting books", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// get recommended books by the logged user
+router.get("/user", protectRoute, async (req, res) => {
+  try {
+    const books = await Book.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
+    res.send(books);
+  } catch (error) {
+    console.error("Get user books error", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// delete a book
+router.delete("/:id", protectRoute, async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    // check if the user is the owner of the book
+    if (book.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // delete the image from cloudinary
+    if (book.image && book.image.includes("cloudinary")) {
+      try {
+        const publicId = book.image.split("/").pop().split(".")[0]; // get the public id from the image url
+        await cloudinary.uploader.destroy(publicId);
+      } catch (deleteError) {
+        console.log("Error deleting image from cloudinary", deleteError);
+        return res.status(500).json({ message: "Server error" });
+      }
+    }
+
+    await book.deleteOne();
+
+    res.json({ message: "Book deleted successfully" });
+  } catch (error) {
+    console.log("Error deleting book", error);
     res.status(500).json({ message: "Server error" });
   }
 });
