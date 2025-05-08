@@ -1,6 +1,7 @@
 import styles from "../../assets/styles/signup.styles";
 import {
   ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Text,
@@ -24,7 +25,12 @@ export default function AuthLayout() {
 
   const router = useRouter();
 
-  const handleSignup = () => {};
+  const handleSignup = async () => {
+    const result = await register(username, email, password);
+    if (!result.success) {
+      Alert.alert("Error", result.error);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
