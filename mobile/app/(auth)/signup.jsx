@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 
 export default function AuthLayout() {
@@ -20,9 +20,11 @@ export default function AuthLayout() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const handleSignup = () => {};
+  const handleSignup = () => {
+    
+  };
 
   return (
     <KeyboardAvoidingView

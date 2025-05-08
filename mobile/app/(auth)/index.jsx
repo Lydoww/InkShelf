@@ -20,7 +20,11 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {};
+  const handleLogin = () => {
+    fetch("http://localhost:3000/api/auth/login"), {
+
+    }
+  };
 
   return (
     <KeyboardAvoidingView
