@@ -12,19 +12,19 @@ import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useAuthStore } from "../../store/authStore";
 
 export default function AuthLayout() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { user, isLoading, register } = useAuthStore();
 
   const router = useRouter();
 
-  const handleSignup = () => {
-    
-  };
+  const handleSignup = () => {};
 
   return (
     <KeyboardAvoidingView
