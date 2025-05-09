@@ -28,7 +28,7 @@ export default function AuthLayout() {
   const handleSignup = async () => {
     const result = await register(username, email, password);
     if (!result.success) {
-      Alert.alert("Error", result.error);
+      Alert.alert("Error", result.message);
     }
   };
 
@@ -57,7 +57,7 @@ export default function AuthLayout() {
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder="John Doe"
+                  placeholder="Johndoe"
                   placeholderTextColor={COLORS.placeholderText}
                   value={username}
                   onChangeText={setUsername}

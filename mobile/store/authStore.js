@@ -6,20 +6,23 @@ export const useAuthStore = create((set) => ({
   token: null,
   isLoading: false,
 
-  register: async (user, email, password) => {
+  register: async (username, email, password) => {
     set({ isLoading: true });
     try {
-      const response = await fetch("http://localhost:3000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-        }),
-      });
+      const response = await fetch(
+        "https://inkshelf.onrender.com/api/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            email,
+            password,
+          }),
+        }
+      );
 
       const data = await response.json();
       if (!response.ok) {
@@ -27,7 +30,7 @@ export const useAuthStore = create((set) => ({
       }
 
       await AsyncStorage.setItem("user", JSON.stringify(data.user));
-      await setItem("token", data.token);
+      await AsyncStorage.setItem("token", data.token);
       set({ token: data.token, user: data.user, isLoading: false });
       return {
         success: true,
