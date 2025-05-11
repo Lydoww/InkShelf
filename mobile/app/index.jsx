@@ -1,8 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
+import { useAuthStore } from "../store/authStore";
 
 export default function Index() {
+  const { user, token } = useAuthStore();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Hello</Text>
