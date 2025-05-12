@@ -6,11 +6,12 @@ export const useAuthStore = create((set) => ({
   user: null,
   token: null,
   isLoading: false,
+  authReady: false,
 
   register: async (username, email, password) => {
     set({ isLoading: true });
     try {
-      const response = await fetch(`${API_URL}/api/auth/register`, {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,9 +50,10 @@ export const useAuthStore = create((set) => ({
       const userJson = await AsyncStorage.getItem("user");
       const user = userJson ? JSON.parse(userJson) : null;
 
-      set({ token, user });
+      set({ token, user, authReady: true });
     } catch (error) {
       console.log("Error checking auth:", error);
+      set({ authReady: true });
     }
   },
 
@@ -59,7 +61,7 @@ export const useAuthStore = create((set) => ({
     try {
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("user");
-      set({ token: null, user: null });
+      set({ token: null, user: null});
     } catch (error) {
       console.log("Error logging out:", error);
     }
@@ -68,7 +70,7 @@ export const useAuthStore = create((set) => ({
   login: async (email, password) => {
     set({ isLoading: true });
     try {
-      const response = await fetch(`${API_URL}/api/auth/login`, {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

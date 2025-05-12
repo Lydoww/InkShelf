@@ -32,6 +32,8 @@ export default function Create() {
   const router = useRouter();
   const { token } = useAuthStore();
 
+  console.log("TOKEN", token);
+
   const pickImage = async () => {
     try {
       // Request permission if needed
@@ -53,7 +55,7 @@ export default function Create() {
         mediaTypes: "images",
         allowsEditing: true,
         aspect: [4, 3],
-        quality: 0.5, // lower quality for smaller base64
+        quality: 0.2, // lower quality for smaller base64
         base64: true,
       });
 
@@ -91,8 +93,8 @@ export default function Create() {
 
     try {
       setLoading(true);
-      // get file extension from uri or default to jpeg
 
+      // get file extension from uri or default to jpeg
       const uriParts = image.split(".");
       const fileType = uriParts[uriParts.length - 1];
       const imageType = fileType
@@ -117,7 +119,7 @@ export default function Create() {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || "Something went wrong!");
+        throw new Error(data.message || "Something went wrong");
       }
 
       Alert.alert("Success", "Book recommendation added successfully!");

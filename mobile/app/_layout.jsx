@@ -6,11 +6,12 @@ import { StatusBar } from "expo-status-bar";
 import { useAuthStore } from "../store/authStore";
 import { useEffect } from "react";
 
+
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
 
-  const { checkAuth, user, token } = useAuthStore();
+  const { checkAuth, user, token, authReady } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -18,12 +19,14 @@ export default function RootLayout() {
 
   // handle navigation based on auth state
   useEffect(() => {
-    if (segments.length === 0) return;
+    if (!authReady ||segments.length === 0) return;
     const inAuthScreen = segments[0] === "(auth)";
     const isSignedIn = user && token;
     if (!isSignedIn && !inAuthScreen) router.replace("/(auth)");
     else if (isSignedIn && inAuthScreen) router.replace("/(tabs)");
-  }, [user, token, segments]);
+  }, [user, token, segments, authReady]);
+
+
 
   return (
     <SafeAreaProvider>
