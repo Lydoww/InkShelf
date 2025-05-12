@@ -30,13 +30,15 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "700",
     color: COLORS.textPrimary,
-    marginBottom: 8,
+    marginBottom: 18,
+    textAlign: "center",
+    alignSelf: "center",
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: COLORS.textSecondary,
     textAlign: "center",
   },
