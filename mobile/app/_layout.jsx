@@ -18,6 +18,7 @@ export default function RootLayout() {
 
   // handle navigation based on auth state
   useEffect(() => {
+    if (segments.length === 0) return;
     const inAuthScreen = segments[0] === "(auth)";
     const isSignedIn = user && token;
     if (!isSignedIn && !inAuthScreen) router.replace("/(auth)");
